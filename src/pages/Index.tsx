@@ -7,8 +7,6 @@ import { Button } from "@/components/ui/button";
 import { LayoutDashboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-
-
 const Index = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const navigate = useNavigate();
