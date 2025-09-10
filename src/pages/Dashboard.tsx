@@ -1,8 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Settings, Download, Database, User, Shield } from 'lucide-react';
+import { ArrowLeft, Settings, Download, Database, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -11,32 +10,34 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-gradient-hero shadow-elegant">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            
+            {/* Bouton retour */}
             <Button
               variant="ghost"
               onClick={() => navigate('/')}
-              className="text-white hover:bg-white/10"
+              className="text-white hover:bg-white/10 self-start sm:self-auto"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Retour
             </Button>
+
+            {/* Titre centré */}
             <div className="text-center flex-1">
-              <h1 className="text-4xl font-bold text-white mb-2">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">
                 Paramètres de gestion
               </h1>
             </div>
 
-            {/* LOGO */}
-
-            <div className="flex items-center space-x-2 -mt-4 ml-2 absolute top-15 left-60"> 
+            {/* Logo */}
+            <div className="flex justify-center sm:justify-end w-full sm:w-auto">
               <img
                 src="/lovable-uploads/Dtech.png"
                 alt="Logo Entreprise"
-                className="h-12 w-auto pb-100"  // ← agrandi (avant h-12)
+                className="h-10 sm:h-12 w-auto"
               />
             </div>
-            <div className="w-24"></div> {/* Spacer pour centrer le titre */}
           </div>
         </div>
       </header>
@@ -72,8 +73,6 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Paramètres généraux */}
-
           {/* Gestion des données */}
           <Card>
             <CardHeader>
@@ -104,7 +103,6 @@ const Dashboard = () => {
           </Card>
 
           {/* Statistiques rapides */}
-
           <Card className="md:col-span-2 lg:col-span-3">
             <CardHeader>
               <CardTitle>Statistiques rapides</CardTitle>
@@ -113,7 +111,7 @@ const Dashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center p-4 bg-muted rounded-lg">
                   <div className="text-2xl font-bold text-primary">0</div>
                   <div className="text-sm text-muted-foreground">Total transactions</div>
