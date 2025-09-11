@@ -118,8 +118,7 @@ export const TransactionTable = ({
   const totalCredit = transactions.reduce((sum, t) => sum + t.credit, 0);
   const totalMonnaie = transactions.reduce((sum, t) => sum + t.monnaie, 0);
   const balance = totalDebit - totalCredit + totalMonnaie;
-
-  return (
+return (
     <div className="space-y-6">
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
