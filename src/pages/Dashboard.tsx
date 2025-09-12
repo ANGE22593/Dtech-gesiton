@@ -1,289 +1,141 @@
-import { useState, useMemo } from "react"
-import { useNavigate } from "react-router-dom"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {Users,FolderKanban,Wrench,LayoutDashboard,Shield,TrendingUp,TrendingDown,FileText,Search,Download,  Edit,Trash2 } from "lucide-react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, Settings, Download, Database, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-
-// ---- Exemple de type Transaction ----
-type Transaction = {
-  id: number
-  nom: string
-  date: string
-  nature: string
-  projetIntervention: string
-  impPrev: string
-  corpsDeMetiers: string
-  monnaie: number
-  debit: number
-  credit: number
-}
-
-// ---- Fonction utilitaire ----
-const formatCurrency = (value: number, currency = "CFA") =>
-  new Intl.NumberFormat("fr-FR", { style: "currency", currency: "XOF" }).format(value)
-
-export default function Dashboard() {
-  const navigate = useNavigate()
-
-  // Transactions simulées
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    {
-      id: 1,
-      nom: "Jean Dupont",
-      date: "2025-09-01",
-      nature: "Achat",
-      projetIntervention: "Projet A",
-      impPrev: "Prévu",
-      corpsDeMetiers: "Plomberie",
-      monnaie: 1000,
-      debit: 500,
-      credit: 0
-    },
-    {
-      id: 2,
-      nom: "Marie Claire",
-      date: "2025-09-05",
-      nature: "Vente",
-      projetIntervention: "Projet B",
-      impPrev: "Imprévu",
-      corpsDeMetiers: "Électricité",
-      monnaie: 2000,
-      debit: 0,
-      credit: 1500
-    }
-  ])
-
-  const [searchTerm, setSearchTerm] = useState("")
-  const [sortField, setSortField] = useState<keyof Transaction | null>(null)
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
-
-  // ---- Calculs ----
-  const totalDebit = useMemo(() => transactions.reduce((sum, t) => sum + t.debit, 0), [transactions])
-  const totalCredit = useMemo(() => transactions.reduce((sum, t) => sum + t.credit, 0), [transactions])
-  const balance = totalCredit - totalDebit
-
-  // ---- Tri et recherche ----
-  const sortedTransactions = useMemo(() => {
-    let filtered = transactions.filter(
-      (t) =>
-        t.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        t.nature.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-
-    if (sortField) {
-      filtered = filtered.sort((a, b) => {
-        const aVal = a[sortField]
-        const bVal = b[sortField]
-        if (aVal < bVal) return sortDirection === "asc" ? -1 : 1
-        if (aVal > bVal) return sortDirection === "asc" ? 1 : -1
-        return 0
-      })
-    }
-
-    return filtered
-  }, [transactions, searchTerm, sortField, sortDirection])
-
-  const handleSort = (field: keyof Transaction) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc")
-    } else {
-      setSortField(field)
-      setSortDirection("asc")
-    }
-  }
-
-  const exportToExcel = () => {
-    alert("⚡ Export Excel simulé (tu pourras brancher SheetJS/xlsx ici)")
-  }
+const Dashboard = () => {
+  const navigate = useNavigate();
 
   return (
-    <div className="p-4 sm:p-8 space-y-8">
-      <h1 className="text-2xl font-bold mb-6">Tableau de Bord</h1>
-
-      {/* ---- Statistiques ---- */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-6 flex justify-between items-center">
-            <div>
-              <p className="text-lg font-medium text-muted-foreground">Total Débit</p>
-              <p className="text-2xl font-bold text-red-600">{formatCurrency(totalDebit)}</p>
-            </div>
-            <TrendingDown className="h-8 w-8 text-red-500" />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6 flex justify-between items-center">
-            <div>
-              <p className="text-lg font-medium text-muted-foreground">Total Crédit</p>
-              <p className="text-2xl font-bold text-green-600">{formatCurrency(totalCredit)}</p>
-            </div>
-            <TrendingUp className="h-8 w-8 text-green-500" />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6 flex justify-between items-center">
-            <div>
-              <p className="text-lg font-medium text-muted-foreground">Solde</p>
-              <p className={`text-2xl font-bold ${balance >= 0 ? "text-green-600" : "text-red-600"}`}>
-                {formatCurrency(balance)}
-              </p>
-            </div>
-            <FileText className="h-8 w-8 text-primary" />
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* ---- Gestion (ton ancien dashboard) ---- */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" /> Gestion des Travailleurs
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">Ajouter, modifier ou supprimer des travailleurs.</p>
-            <Button onClick={() => navigate("/manage-workers")} className="w-full">
-              Gérer
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FolderKanban className="h-5 w-5" /> Gestion des Projets
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">Suivi et organisation des projets.</p>
-            <Button onClick={() => navigate("/manage-projects")} className="w-full">
-              Gérer
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Wrench className="h-5 w-5" /> Corps de Métier
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">Administration des corps de métier.</p>
-            <Button onClick={() => navigate("/manage-trades")} className="w-full">
-              Gérer
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" /> Administration
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">Accéder au panneau d’administration sécurisé.</p>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="bg-gradient-hero shadow-elegant">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            
+            {/* Bouton retour */}
             <Button
-              onClick={() => navigate("/admin-login")}
-              className="w-full bg-gradient-primary hover:shadow-hover transition-all duration-300"
+              variant="ghost"
+              onClick={() => navigate('/')}
+              className="text-white hover:bg-white/10 self-start sm:self-auto"
             >
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              Accéder au Panneau Admin
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Retour
             </Button>
-          </CardContent>
-        </Card>
-      </div>
 
-      {/* ---- Tableau Transactions ---- */}
-      <Card>
-        <CardHeader>
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <CardTitle className="text-xl font-semibold">Transactions ({transactions.length})</CardTitle>
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Rechercher..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-full sm:w-64"
-                />
-              </div>
-              <Button onClick={exportToExcel} className="bg-gradient-secondary">
-                <Download className="h-4 w-4 mr-2" />
-                Exporter Excel
-              </Button>
+            {/* Titre centré */}
+            <div className="text-center flex-1">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">
+                Paramètres de gestion
+              </h1>
+            </div>
+
+            {/* Logo */}
+            <div className="flex justify-center sm:justify-end w-full sm:w-auto">
+              <img
+                src="/lovable-uploads/Dtech.png"
+                alt="Logo Entreprise"
+                className="h-10 sm:h-12 w-auto"
+              />
             </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          {sortedTransactions.length === 0 ? (
-            <p className="text-center text-muted-foreground py-12">Aucune transaction trouvée</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead onClick={() => handleSort("date")} className="cursor-pointer">
-                      Date {sortField === "date" && (sortDirection === "asc" ? "↑" : "↓")}
-                    </TableHead>
-                    <TableHead onClick={() => handleSort("nom")} className="cursor-pointer">
-                      Nom {sortField === "nom" && (sortDirection === "asc" ? "↑" : "↓")}
-                    </TableHead>
-                    <TableHead>Nature</TableHead>
-                    <TableHead>Projet</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Corps</TableHead>
-                    <TableHead className="text-right">Monnaie</TableHead>
-                    <TableHead className="text-right">Débit</TableHead>
-                    <TableHead className="text-right">Crédit</TableHead>
-                    <TableHead className="text-center">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sortedTransactions.map((t) => (
-                    <TableRow key={t.id}>
-                      <TableCell>{new Date(t.date).toLocaleDateString("fr-FR")}</TableCell>
-                      <TableCell>{t.nom}</TableCell>
-                      <TableCell>{t.nature}</TableCell>
-                      <TableCell>{t.projetIntervention}</TableCell>
-                      <TableCell>
-                        <Badge variant={t.impPrev === "Imprévu" ? "destructive" : "secondary"}>{t.impPrev}</Badge>
-                      </TableCell>
-                      <TableCell>{t.corpsDeMetiers}</TableCell>
-                      <TableCell className="text-right">
-                        {t.monnaie > 0 ? formatCurrency(t.monnaie) : "-"}
-                      </TableCell>
-                      <TableCell className="text-right text-red-600">
-                        {t.debit > 0 ? formatCurrency(t.debit) : "-"}
-                      </TableCell>
-                      <TableCell className="text-right text-green-600">
-                        {t.credit > 0 ? formatCurrency(t.credit) : "-"}
-                      </TableCell>
-                      <TableCell className="flex justify-center gap-2">
-                        <Button size="sm" variant="outline">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button size="sm" variant="destructive">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          {/* Administration */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Shield className="mr-2 h-5 w-5" />
+                Administration
+              </CardTitle>
+              <CardDescription>
+                Gestion des données configurables du système
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <Button 
+                  onClick={() => navigate('/admin-login')}
+                  className="w-full bg-gradient-primary hover:shadow-hover transition-all duration-300"
+                >
+                  <Shield className="mr-2 h-4 w-4" />
+                  Accéder au Panneau Admin
+                </Button>
+                <p className="text-sm text-muted-foreground">
+                  Modifier les noms, projets et corps de métiers
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Gestion des données */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Database className="mr-2 h-5 w-5" />
+                Gestion des données
+              </CardTitle>
+              <CardDescription>
+                Import/Export et sauvegarde des données
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <Button variant="outline" className="w-full justify-start">
+                  <Download className="mr-2 h-4 w-4" />
+                  Exporter toutes les données
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <Database className="mr-2 h-4 w-4" />
+                  Sauvegarder la base
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Restaurer les données
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Statistiques rapides */}
+          <Card className="md:col-span-2 lg:col-span-3">
+            <CardHeader>
+              <CardTitle>Statistiques rapides</CardTitle>
+              <CardDescription>
+                Vue d'ensemble des données de l'application
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center p-4 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-primary">0</div>
+                  <div className="text-sm text-muted-foreground">Total transactions</div>
+                </div>
+                <div className="text-center p-4 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">0 F CFA</div>
+                  <div className="text-sm text-muted-foreground">Total crédits</div>
+                </div>
+                <div className="text-center p-4 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-red-600">0 F CFA</div>
+                  <div className="text-sm text-muted-foreground">Total débits</div>
+                </div>
+                <div className="text-center p-4 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">0 F CFA</div>
+                  <div className="text-sm text-muted-foreground">Solde</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+        </div>
+      </main>
     </div>
-  )
-}
+  );
+};
+
+export default Dashboard;
