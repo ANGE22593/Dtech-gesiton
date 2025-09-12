@@ -32,8 +32,6 @@ const App = () => {
             {/* Page d'accueil → uniquement formulaire */}
             <Route path="/" element={<Index onAddTransaction={handleAddTransaction} />} />
 
-            {/* Dashboard → transactions passées en props */}
-
             {/* Admin */}
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-panel" element={<AdminPanel />} />
