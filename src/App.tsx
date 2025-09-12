@@ -33,7 +33,6 @@ const App = () => {
             <Route path="/" element={<Index onAddTransaction={handleAddTransaction} />} />
 
             {/* Dashboard → transactions passées en props */}
-            <Route path="/dashboard" element={<Dashboard transactions={transactions} />} />
 
             {/* Admin */}
             <Route path="/admin-login" element={<AdminLogin />} />
