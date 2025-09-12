@@ -3,39 +3,46 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState } from "react";
+
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import Dashboard from "./pages/Dashboard"; // ✅ Ajout du Dashboard
-import AdminLogin from "./pages/AdminLogin"; // ✅ Page de connexion admin
-import AdminPanel from "./pages/AdminPanel"; // ✅ Tableau de modifications
+import Dashboard from "./pages/Dashboard";
+import AdminLogin from "./pages/AdminLogin";
+import AdminPanel from "./pages/AdminPanel";
+import { Transaction } from "@/types/transaction";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Page d'accueil */}
-          <Route path="/" element={<Index />} />
+const App = () => {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-          {/* ✅ Route Dashboard */}
-          <Route path="/dashboard" element={<Dashboard />} />
+  // Fonction pour ajouter une transaction
+  const handleAddTransaction = (transaction: Transaction) => {
+    setTransactions((prev) => [transaction, ...prev]);
+  };
 
-          {/* ✅ Route Login Admin */}
-          <Route path="/admin-login" element={<AdminLogin />} />
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {/* Page d'accueil → uniquement formulaire */}
+            <Route path="/" element={<Index onAddTransaction={handleAddTransaction} />} />
 
-          {/* ✅ Route Panneau Admin */}
-          <Route path="/admin-panel" element={<AdminPanel />} />
+            {/* Admin */}
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/admin-panel" element={<AdminPanel />} />
 
-          {/* Catch-all pour les routes inexistantes */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+            {/* 404 */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

@@ -258,7 +258,5 @@ export const TransactionTable = ({
       </Card>
     </div>
   );
-<TransactionTable transactions={transactions} />
-
 
 };

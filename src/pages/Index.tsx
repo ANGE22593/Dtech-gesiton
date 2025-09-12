@@ -1,19 +1,12 @@
-import { useState } from "react";
 import { Transaction } from "@/types/transaction";
 import { TransactionForm } from "@/components/TransactionForm";
-import { TransactionTable } from "@/components/TransactionTable";
 import HeaderTransactions from "@/components/HeaderTransactions"; 
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const Index = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+const Index = ({ onAddTransaction }: { onAddTransaction: (t: Transaction) => void }) => {
   const navigate = useNavigate();
-
-  const handleAddTransaction = (transaction: Transaction) => {
-    setTransactions((prev) => [transaction, ...prev]);
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,10 +54,8 @@ const Index = () => {
 
       {/* Contenu principal */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-8">
-          <TransactionForm onAddTransaction={handleAddTransaction} />
-          <TransactionTable transactions={transactions} />
-        </div>
+        {/* ✅ Uniquement le formulaire */}
+        <TransactionForm onAddTransaction={onAddTransaction} />
       </main>
     </div>
   );
