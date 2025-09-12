@@ -118,5 +118,147 @@ export const TransactionTable = ({
   const totalCredit = transactions.reduce((sum, t) => sum + t.credit, 0);
   const totalMonnaie = transactions.reduce((sum, t) => sum + t.monnaie, 0);
   const balance = totalDebit - totalCredit + totalMonnaie;
+  return (
+    <div className="space-y-6">
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="shadow-card bg-gradient-card border-0">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-lg font-medium text-muted-foreground">Total Débit</p>
+                <p className="text-2xl font-bold text-red-600">{formatCurrency(totalDebit, 'CFA')}</p>
+              </div>
+              <TrendingDown className="h-8 w-8 text-red-500" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-card bg-gradient-card border-0">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-lg font-medium text-muted-foreground">Total Crédit</p>
+                <p className="text-2xl font-bold text-green-600">{formatCurrency(totalCredit, 'CFA')}</p>
+              </div>
+              <TrendingUp className="h-8 w-8 text-green-500" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-card bg-gradient-card border-0">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-lg font-medium text-muted-foreground">Solde</p>
+                <p className={`text-2xl font-bold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {formatCurrency(balance, 'CFA')}
+                </p>
+              </div>
+              <FileText className="h-8 w-8 text-primary" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Table */}
+      <Card className="shadow-card bg-gradient-card border-0">
+        <CardHeader>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <CardTitle className="text-xl font-semibold bg-gradient-hero bg-clip-text text-transparent">
+              Transactions ({transactions.length})
+            </CardTitle>
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Rechercher..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 w-full sm:w-64 transition-smooth focus:shadow-hover"
+                />
+              </div>
+              <Button
+                onClick={exportToExcel}
+                className="bg-gradient-secondary hover:shadow-hover transition-all duration-300 transform hover:scale-105"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Exporter Excel
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {sortedTransactions.length === 0 ? (
+            <div className="text-center py-12">
+              <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-lg font-medium text-muted-foreground">
+                {searchTerm ? 'Aucune transaction trouvée' : 'Aucune transaction enregistrée'}
+              </p>
+              <p className="text-lg text-muted-foreground mt-1">
+                {searchTerm ? 'Essayez de modifier votre recherche' : 'Commencez par ajouter une nouvelle transaction'}
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="cursor-pointer" onClick={() => handleSort('date')}>
+                      Date {sortField === 'date' && (sortDirection === 'asc' ? '↑' : '↓')}
+                    </TableHead>
+                    <TableHead className="cursor-pointer" onClick={() => handleSort('nom')}>
+                      Nom {sortField === 'nom' && (sortDirection === 'asc' ? '↑' : '↓')}
+                    </TableHead>
+                    <TableHead>Nature</TableHead>
+                    <TableHead>Projet</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Corps</TableHead>
+                    <TableHead className="text-right">Monnaie</TableHead>
+                    <TableHead className="text-right">Débit</TableHead>
+                    <TableHead className="text-right">Crédit</TableHead>
+                    <TableHead className="text-center">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sortedTransactions.map((transaction) => (
+                    <TableRow key={transaction.id} className="hover:bg-muted/50 transition-colors">
+                      <TableCell>{new Date(transaction.date).toLocaleDateString('fr-FR')}</TableCell>
+                      <TableCell>{transaction.nom}</TableCell>
+                      <TableCell>{transaction.nature}</TableCell>
+                      <TableCell className="max-w-32 truncate">{transaction.projetIntervention}</TableCell>
+                      <TableCell>
+                        <Badge variant={transaction.impPrev === 'Imprévu' ? 'destructive' : 'secondary'}>
+                          {transaction.impPrev}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="max-w-24 truncate">{transaction.corpsDeMetiers}</TableCell>
+                      <TableCell className="text-right">{transaction.monnaie > 0 ? formatCurrency(transaction.monnaie, 'CFA') : '-'}</TableCell>
+                      <TableCell className="text-right text-red-600">{transaction.debit > 0 ? formatCurrency(transaction.debit, 'CFA') : '-'}</TableCell>
+                      <TableCell className="text-right text-green-600">{transaction.credit > 0 ? formatCurrency(transaction.credit, 'CFA') : '-'}</TableCell>
+                      <TableCell className="text-center flex justify-center gap-2">
+                        {onEditTransaction && (
+                          <Button size="sm" variant="outline" onClick={() => onEditTransaction(transaction)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        )}
+                        {onDeleteTransaction && (
+                          <Button size="sm" variant="destructive" onClick={() => onDeleteTransaction(transaction.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+<TransactionTable transactions={transactions} />
+
 
 };
