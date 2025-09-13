@@ -21,6 +21,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import { Transaction } from "@/types/transaction"
 
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
+
 // ---- Fonction utilitaire ----
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("fr-FR", { style: "currency", currency: "XOF" }).format(value)
@@ -72,12 +76,38 @@ export default function Dashboard({ transactions }: DashboardProps) {
   }
 
   const exportToExcel = () => {
-    alert("⚡ Export Excel simulé (tu pourras brancher SheetJS/xlsx ici)")
+  if (transactions.length === 0) {
+    alert("Aucune transaction à exporter");
+    return;
   }
+
+  // 1️⃣ Préparer les données
+  const data = transactions.map(t => ({
+    Date: t.date,
+    Nom: t.nom,
+    Nature: t.nature,
+    Projet: t.projetIntervention,
+    Type: t.impPrev,
+    Corps: t.corpsDeMetiers,
+    Monnaie: t.monnaie,
+    Débit: t.debit,
+    Crédit: t.credit
+  }));
+
+  // 2️⃣ Créer le workbook
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Transactions");
+
+  // 3️⃣ Générer le fichier Excel
+  const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+  const blob = new Blob([wbout], { type: "application/octet-stream" });
+  saveAs(blob, `transactions_${new Date().toISOString().split("T")[0]}.xlsx`);
+ };
 
   return (
     <div className="p-4 sm:p-8 space-y-8">
-      <h1 className="text-2xl font-bold mb-6">Tableau de Bord</h1>
+      <h1 className="text-2xl font-bold mb-6">Tableau des statistiques</h1>
 
       {/* ---- Statistiques ---- */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
