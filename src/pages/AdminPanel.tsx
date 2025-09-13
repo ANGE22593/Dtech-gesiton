@@ -138,6 +138,14 @@ export default function AdminPanel() {
       >
         <ArrowLeft className="mr-2 h-4 w-4" /> Retour Dashboard
       </Button>
+      <Button
+        onClick={() => {
+          localStorage.removeItem("isAdminLogged");
+          navigate("/admin-login");
+        }}
+      >
+        Déconnexion
+      </Button>
 
       <h1 className="text-3xl font-bold mb-6">⚙️ Panneau Admin</h1>
 

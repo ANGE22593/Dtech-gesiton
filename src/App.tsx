@@ -38,7 +38,7 @@ const App = () => {
             {/* Dashboard → transactions passées en props */}
             <Route
               path="/dashboard"
-              element={<Dashboard />} // <-- sans transactions
+              element={<Dashboard transactions={transactions} />}
             />
 
             {/* Admin */}

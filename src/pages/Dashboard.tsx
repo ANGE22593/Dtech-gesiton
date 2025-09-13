@@ -19,55 +19,18 @@ import {
 } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-
-// ---- Exemple de type Transaction ----
-type Transaction = {
-  id: number
-  nom: string
-  date: string
-  nature: string
-  projetIntervention: string
-  impPrev: string
-  corpsDeMetiers: string
-  monnaie: number
-  debit: number
-  credit: number
-}
+import { Transaction } from "@/types/transaction"
 
 // ---- Fonction utilitaire ----
-const formatCurrency = (value: number, currency = "CFA") =>
+const formatCurrency = (value: number) =>
   new Intl.NumberFormat("fr-FR", { style: "currency", currency: "XOF" }).format(value)
 
-export default function Dashboard() {
-  const navigate = useNavigate()
+type DashboardProps = {
+  transactions: Transaction[]
+}
 
-  // Transactions simulées
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    {
-      id: 1,
-      nom: "Jean Dupont",
-      date: "2025-09-01",
-      nature: "Achat",
-      projetIntervention: "Projet A",
-      impPrev: "Prévu",
-      corpsDeMetiers: "Plomberie",
-      monnaie: 1000,
-      debit: 500,
-      credit: 0
-    },
-    {
-      id: 2,
-      nom: "Marie Claire",
-      date: "2025-09-05",
-      nature: "Vente",
-      projetIntervention: "Projet B",
-      impPrev: "Imprévu",
-      corpsDeMetiers: "Électricité",
-      monnaie: 2000,
-      debit: 0,
-      credit: 1500
-    }
-  ])
+export default function Dashboard({ transactions }: DashboardProps) {
+  const navigate = useNavigate()
 
   const [searchTerm, setSearchTerm] = useState("")
   const [sortField, setSortField] = useState<keyof Transaction | null>(null)
@@ -151,7 +114,7 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* ---- Gestion (ton ancien dashboard) ---- */}
+      {/* ---- Gestion ---- */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="hover:shadow-lg transition-shadow">
           <CardHeader>
@@ -271,15 +234,9 @@ export default function Dashboard() {
                         <Badge variant={t.impPrev === "Imprévu" ? "destructive" : "secondary"}>{t.impPrev}</Badge>
                       </TableCell>
                       <TableCell>{t.corpsDeMetiers}</TableCell>
-                      <TableCell className="text-right">
-                        {t.monnaie > 0 ? formatCurrency(t.monnaie) : "-"}
-                      </TableCell>
-                      <TableCell className="text-right text-red-600">
-                        {t.debit > 0 ? formatCurrency(t.debit) : "-"}
-                      </TableCell>
-                      <TableCell className="text-right text-green-600">
-                        {t.credit > 0 ? formatCurrency(t.credit) : "-"}
-                      </TableCell>
+                      <TableCell className="text-right">{t.monnaie > 0 ? formatCurrency(t.monnaie) : "-"}</TableCell>
+                      <TableCell className="text-right text-red-600">{t.debit > 0 ? formatCurrency(t.debit) : "-"}</TableCell>
+                      <TableCell className="text-right text-green-600">{t.credit > 0 ? formatCurrency(t.credit) : "-"}</TableCell>
                       <TableCell className="flex justify-center gap-2">
                         <Button size="sm" variant="outline">
                           <Edit className="h-4 w-4" />
