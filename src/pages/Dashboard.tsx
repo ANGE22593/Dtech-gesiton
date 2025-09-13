@@ -106,8 +106,20 @@ export default function Dashboard({ transactions }: DashboardProps) {
  };
 
   return (
+    
     <div className="p-4 sm:p-8 space-y-8">
       <h1 className="text-2xl font-bold mb-6">Tableau des statistiques</h1>
+      <div className="flex items-center justify-between mb-6">
+        <Button
+          onClick={() => navigate(-1)}
+          variant="outline"
+          className="flex items-center gap-2"
+        >
+          ← Retour
+        </Button>
+        <h1 className="text-2xl font-bold">Tableau des statistiques</h1>
+      </div>
+
 
       {/* ---- Statistiques ---- */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
