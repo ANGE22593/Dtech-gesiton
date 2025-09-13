@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
 import Index from "./pages/Index";
@@ -27,10 +27,19 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <Router>
           <Routes>
             {/* Page d'accueil → uniquement formulaire */}
-            <Route path="/" element={<Index onAddTransaction={handleAddTransaction} />} />
+            <Route
+              path="/"
+              element={<Index onAddTransaction={handleAddTransaction} />}
+            />
+
+            {/* Dashboard → transactions passées en props */}
+            <Route
+              path="/dashboard"
+              element={<Dashboard />} // <-- sans transactions
+            />
 
             {/* Admin */}
             <Route path="/admin-login" element={<AdminLogin />} />
@@ -39,7 +48,7 @@ const App = () => {
             {/* 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
+        </Router>
       </TooltipProvider>
     </QueryClientProvider>
   );
