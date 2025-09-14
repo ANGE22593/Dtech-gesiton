@@ -175,34 +175,6 @@ export default function Dashboard({ transactions }: DashboardProps) {
         <Card className="hover:shadow-lg transition-shadow">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FolderKanban className="h-5 w-5" /> Gestion des Projets
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">Suivi et organisation des projets.</p>
-            <Button onClick={() => navigate("/manage-projects")} className="w-full">
-              Gérer
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Wrench className="h-5 w-5" /> Corps de Métier
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">Administration des corps de métier.</p>
-            <Button onClick={() => navigate("/manage-trades")} className="w-full">
-              Gérer
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5" /> Administration
             </CardTitle>
           </CardHeader>
