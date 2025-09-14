@@ -120,6 +120,27 @@ export default function Dashboard({ transactions }: DashboardProps) {
         <h1 className="text-2xl font-bold">Tableau des statistiques</h1>
       </div>
 
+        {/* ---- Gestion ---- */}
+      
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="hover:shadow-lg transition-shadow">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5" /> Administration
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">Accéder au panneau d’administration sécurisé.</p>
+            <Button
+              onClick={() => navigate("/admin-login")}
+              className="w-full bg-gradient-primary hover:shadow-hover transition-all duration-300"
+            >
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              Accéder au Panneau Admin
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* ---- Statistiques ---- */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -132,7 +153,6 @@ export default function Dashboard({ transactions }: DashboardProps) {
             <TrendingDown className="h-8 w-8 text-red-500" />
           </CardContent>
         </Card>
-
         <Card>
           <CardContent className="p-6 flex justify-between items-center">
             <div>
@@ -156,28 +176,8 @@ export default function Dashboard({ transactions }: DashboardProps) {
         </Card>
       </div>
 
-      {/* ---- Gestion ---- */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" /> Administration
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">Accéder au panneau d’administration sécurisé.</p>
-            <Button
-              onClick={() => navigate("/admin-login")}
-              className="w-full bg-gradient-primary hover:shadow-hover transition-all duration-300"
-            >
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              Accéder au Panneau Admin
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* ---- Tableau Transactions ---- */}
+      
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
