@@ -161,20 +161,6 @@ export default function Dashboard({ transactions }: DashboardProps) {
         <Card className="hover:shadow-lg transition-shadow">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" /> Gestion des Travailleurs
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">Ajouter, modifier ou supprimer des travailleurs.</p>
-            <Button onClick={() => navigate("/manage-workers")} className="w-full">
-              Gérer
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5" /> Administration
             </CardTitle>
           </CardHeader>
