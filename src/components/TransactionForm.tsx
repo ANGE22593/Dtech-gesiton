@@ -88,47 +88,50 @@ export const TransactionForm = ({ onAddTransaction }: TransactionFormProps) => {
   const [openProjet, setOpenProjet] = useState(false);
   const [openNom, setOpenNom] = useState(false);
 
- const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
 
   const debit = parseFloat(formData.debit) || 0;
   const credit = parseFloat(formData.credit) || 0;
   const monnaie = parseFloat(formData.monnaie) || 0;
 
-  // Vérification des champs obligatoires individuellement
+  // Vérification champs obligatoires
+  if (!formData.date.trim()) {
+    toast({ title: "Erreur", description: "Le champ Date est obligatoire", variant: "destructive" });
+    return;
+  }
+
   if (!formData.nom.trim()) {
-    toast({ title: "Erreur de validation", description: "Le champ Nom est obligatoire", variant: "destructive" });
+    toast({ title: "Erreur", description: "Le champ Nom est obligatoire", variant: "destructive" });
     return;
   }
 
   if (!formData.nature.trim()) {
-    toast({ title: "Erreur de validation", description: "Le champ Nature est obligatoire", variant: "destructive" });
+    toast({ title: "Erreur", description: "Le champ Nature est obligatoire", variant: "destructive" });
     return;
   }
 
   if (!formData.projetIntervention.trim()) {
-    toast({ title: "Erreur de validation", description: "Le champ Projet/Intervention est obligatoire", variant: "destructive" });
+    toast({ title: "Erreur", description: "Le champ Projet/Intervention est obligatoire", variant: "destructive" });
     return;
   }
 
   if (!formData.detail.trim()) {
-    toast({ title: "Erreur de validation", description: "Le champ Détail est obligatoire", variant: "destructive" });
+    toast({ title: "Erreur", description: "Le champ Détail est obligatoire", variant: "destructive" });
     return;
   }
 
-  // Vérification Monnaie, Débit, Crédit (au moins un doit être rempli)
-  if (monnaie === 0 && debit === 0 && credit === 0) {
-    toast({ title: "Erreur de validation", description: "Au moins un des champs Monnaie, Débit ou Crédit doit être rempli", variant: "destructive" });
+  if (!formData.monnaie.trim() && !formData.debit.trim() && !formData.credit.trim()) {
+    toast({ title: "Erreur", description: "Au moins un montant (Monnaie, Débit ou Crédit) doit être saisi", variant: "destructive" });
     return;
   }
 
-  // Interdire Débit et Crédit simultanément
+  // Débit et Crédit en même temps (logique métier stricte)
   if (debit > 0 && credit > 0) {
-    toast({ title: "Erreur de validation", description: "Vous ne pouvez pas remplir Débit et Crédit en même temps", variant: "destructive" });
+    toast({ title: "Erreur", description: "Vous ne pouvez pas remplir Débit et Crédit simultanément", variant: "destructive" });
     return;
   }
 
-  // Création de l'objet transaction
   const transaction: Transaction = {
     id: `tx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     date: formData.date,
@@ -146,7 +149,7 @@ export const TransactionForm = ({ onAddTransaction }: TransactionFormProps) => {
 
   onAddTransaction(transaction);
 
-  // Reset du formulaire
+  // Reset formulaire
   setFormData({
     date: new Date().toISOString().split('T')[0],
     nom: '',
@@ -160,12 +163,8 @@ export const TransactionForm = ({ onAddTransaction }: TransactionFormProps) => {
     credit: ''
   });
 
-  toast({
-    title: "Transaction ajoutée",
-    description: "La transaction a été ajoutée avec succès"
-  });
+  toast({ title: "Succès", description: "Transaction ajoutée avec succès" });
 };
-
 
 
   const updateField = (field: keyof TransactionFormData, value: string) => {
