@@ -8,20 +8,28 @@ const AdminLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  
-  const handleLogin = () => {
-    // Identifiants par défaut
-    const storedUser = localStorage.getItem("adminUsername") || "Dtechcaisseadmin";
-    const storedPass = localStorage.getItem("adminPassword") || "Dtechsarl24";
+  const handleLogin = async () => {
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("password", password);
 
-    if (username === storedUser && password === storedPass) {
-      // ✅ Marquer l’admin comme connecté
-      localStorage.setItem("isAdminLoggedIn", "true");
+    try {
+      const res = await fetch("http://localhost/dtech/login.php", {
+        method: "POST",
+        body: formData,
+      });
 
-      // ✅ Redirection vers le Dashboard
-      navigate("/dashboard");
-    } else {
-      alert("Identifiant ou mot de passe incorrect");
+      const data = await res.json();
+
+      if (data.success) {
+        // ✅ Redirige vers le Dashboard
+        navigate("/dashboard");
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur serveur. Vérifiez que WAMP est démarré.");
     }
   };
 

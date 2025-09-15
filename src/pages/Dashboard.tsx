@@ -3,27 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Users,
-  FolderKanban,
-  Wrench,
-  LayoutDashboard,
-  Shield,
-  TrendingUp,
-  TrendingDown,
-  FileText,
-  Search,
-  Download,
-  Edit,
-  Trash2
+import { 
+  LayoutDashboard, Shield, TrendingUp, TrendingDown, FileText, Search, Download, Edit, Trash2
 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Transaction } from "@/types/transaction";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import { checkAdminLogin, isAdminLoggedIn, logoutAdmin } from "@/auth";
-// ---- Fonction utilitaire ----
+
+// Utilitaire
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("fr-FR", { style: "currency", currency: "XOF" }).format(value);
 
@@ -33,36 +22,38 @@ type DashboardProps = {
 
 export default function Dashboard({ transactions }: DashboardProps) {
   const navigate = useNavigate();
-
-  // ---- Vérifier la connexion admin ----
-  useEffect(() => {
-    if (!isAdminLoggedIn()) {
-      navigate("/"); // redirige vers la page d'accueil si pas connecté
-    }
-  }, [navigate]);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [sortField, setSortField] = useState<keyof Transaction | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  // ---- Modal de connexion Admin ----
-  const [showLogin, setShowLogin] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  // ---- Vérifier si admin connecté côté serveur ----
+  useEffect(() => {
+    const checkAdminSession = async () => {
+      try {
+        const res = await fetch("http://localhost/dtech/check_session.php");
+        const data = await res.json();
+        if (!data.loggedIn) {
+          alert("Un autre appareil est déjà connecté ou vous n'êtes pas connecté !");
+          navigate("/admin-login");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Erreur serveur. Vérifiez que WAMP est démarré.");
+      }
+    };
+    checkAdminSession();
+  }, [navigate]);
 
-  const handleAdminLogin = () => {
-    if (checkAdminLogin(username, password)) {
-      setShowLogin(false);
-      navigate("/admin-panel");
-    } else {
-      alert("Identifiant ou mot de passe incorrect");
+  // ---- Déconnexion ----
+  const handleLogout = async () => {
+    try {
+      await fetch("http://localhost/dtech/logout.php");
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la déconnexion.");
     }
   };
-
-  // ---- Calculs ----
-  const totalDebit = useMemo(() => transactions.reduce((sum, t) => sum + t.debit, 0), [transactions]);
-  const totalCredit = useMemo(() => transactions.reduce((sum, t) => sum + t.credit, 0), [transactions]);
-  const balance = totalCredit - totalDebit;
 
   // ---- Tri et recherche ----
   const sortedTransactions = useMemo(() => {
@@ -94,6 +85,12 @@ export default function Dashboard({ transactions }: DashboardProps) {
     }
   };
 
+  // ---- Calculs ----
+  const totalDebit = useMemo(() => transactions.reduce((sum, t) => sum + t.debit, 0), [transactions]);
+  const totalCredit = useMemo(() => transactions.reduce((sum, t) => sum + t.credit, 0), [transactions]);
+  const balance = totalCredit - totalDebit;
+
+  // ---- Export Excel ----
   const exportToExcel = () => {
     if (transactions.length === 0) {
       alert("Aucune transaction à exporter");
@@ -129,86 +126,12 @@ export default function Dashboard({ transactions }: DashboardProps) {
             <div className="flex items-center">
               <img src="/lovable-uploads/Dtech.png" alt="Logo Entreprise" className="h-10 sm:h-12 md:h-10 w-auto" />
             </div>
-          </div>
-
-          <div className="text-center mt-4">
-            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Tableau des statistiques</h1>
-            <p className="text-base sm:text-lg text-white/90">
-              Saisissez et exportez vos données financières en toute simplicité
-            </p>
+            <Button onClick={handleLogout} variant="destructive">Déconnexion</Button>
           </div>
         </div>
       </header>
 
-      <div className="flex items-center justify-between mb-6">
-        <Button onClick={() => navigate(-1)} variant="outline" className="flex items-center gap-2">
-          ← Retour
-        </Button>
-
-        <Button
-          onClick={() => {
-            logoutAdmin();
-            navigate("/");
-          }}
-          variant="destructive"
-        >
-          Déconnexion
-        </Button>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" /> Administration
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">Accéder au panneau d’administration sécurisé.</p>
-            <Button
-              onClick={() => setShowLogin(true)}
-              className="w-full bg-gradient-primary hover:shadow-hover transition-all duration-300"
-            >
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              Accéder au Panneau Admin
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* ---- Modal Login Admin ---- */}
-      
-      {showLogin && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-md w-96">
-            <h2 className="text-2xl font-bold mb-4">Connexion Admin</h2>
-            <Input
-              placeholder="Nom d'utilisateur"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="mb-3"
-            />
-            <Input
-              type="password"
-              placeholder="Mot de passe"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mb-3"
-            />
-            <div className="flex justify-between mt-4">
-              {/* ...autres champs... */}
-              <Button onClick={handleAdminLogin} className="w-full">
-                Se connecter
-              </Button>
-              <Button variant="outline" onClick={() => setShowLogin(false)}>
-                Annuler
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ---- Statistiques ---- */}
+      {/* Statistiques */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-6 flex justify-between items-center">
@@ -228,7 +151,6 @@ export default function Dashboard({ transactions }: DashboardProps) {
             <TrendingUp className="h-8 w-8 text-green-500" />
           </CardContent>
         </Card>
-
         <Card>
           <CardContent className="p-6 flex justify-between items-center">
             <div>
@@ -242,7 +164,7 @@ export default function Dashboard({ transactions }: DashboardProps) {
         </Card>
       </div>
 
-      {/* ---- Tableau Transactions ---- */}
+      {/* Tableau Transactions */}
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
