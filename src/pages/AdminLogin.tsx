@@ -8,6 +8,7 @@ const AdminLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  
   const handleLogin = () => {
     // Identifiants par défaut
     const storedUser = localStorage.getItem("adminUsername") || "Dtechcaisseadmin";
