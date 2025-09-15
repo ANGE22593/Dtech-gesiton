@@ -108,6 +108,43 @@ export default function Dashboard({ transactions }: DashboardProps) {
   return (
     
     <div className="p-4 sm:p-8 space-y-8">
+      <header className="bg-gradient-hero shadow-elegant">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {/* Ligne contenant logo + dashboard */}
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <div className="flex items-center">
+              <img
+                src="/lovable-uploads/Dtech.png"
+                alt="Logo Entreprise"
+                className="h-10 sm:h-12 md:h-14 w-auto"
+              />
+            </div>
+
+            {/* Dashboard bouton */}
+            <div>
+              <Button
+                variant="ghost"
+                onClick={() => navigate("/dashboard")}
+                title="Aller au Dashboard"
+                className="p-2"
+              >
+                <LayoutDashboard className="h-6 w-6 sm:h-7 sm:w-7" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Titre */}
+          <div className="text-center mt-4">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+              Caisse Journalière
+            </h1>
+            <p className="text-base sm:text-lg text-white/90">
+              Saisissez et exportez vos données financières en toute simplicité
+            </p>
+          </div>
+        </div>
+      </header>
       <h1 className="text-2xl font-bold mb-6">Tableau des statistiques</h1>
       <div className="flex items-center justify-between mb-6">
         <Button
