@@ -36,6 +36,7 @@ const App = () => {
             />
 
             {/* Dashboard → transactions passées en props */}
+            
             <Route
               path="/dashboard"
               element={
