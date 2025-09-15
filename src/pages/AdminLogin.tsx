@@ -9,11 +9,16 @@ const AdminLogin = () => {
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
+    // Identifiants par défaut
     const storedUser = localStorage.getItem("adminUsername") || "Dtechcaisseadmin";
     const storedPass = localStorage.getItem("adminPassword") || "Dtechsarl24";
 
     if (username === storedUser && password === storedPass) {
-      navigate("/admin-panel");
+      // ✅ Marquer l’admin comme connecté
+      localStorage.setItem("isAdminLoggedIn", "true");
+
+      // ✅ Redirection vers le Dashboard
+      navigate("/dashboard");
     } else {
       alert("Identifiant ou mot de passe incorrect");
     }

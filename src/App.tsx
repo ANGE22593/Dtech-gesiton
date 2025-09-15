@@ -38,8 +38,15 @@ const App = () => {
             {/* Dashboard → transactions passées en props */}
             <Route
               path="/dashboard"
-              element={<Dashboard transactions={transactions} />}
+              element={
+                localStorage.getItem("isAdminLoggedIn") === "true" ? (
+                  <Dashboard transactions={transactions} />
+                ) : (
+                  <AdminLogin />
+                )
+              }
             />
+
 
             {/* Admin */}
             <Route path="/admin-login" element={<AdminLogin />} />

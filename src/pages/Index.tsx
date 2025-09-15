@@ -3,7 +3,7 @@ import { TransactionForm } from "@/components/TransactionForm";
 import HeaderTransactions from "@/components/HeaderTransactions"; 
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 
 const Index = ({ onAddTransaction }: { onAddTransaction: (t: Transaction) => void }) => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const Index = ({ onAddTransaction }: { onAddTransaction: (t: Transaction) => voi
     <div className="min-h-screen bg-background">
       {/* Header principal */}
       <header className="bg-gradient-hero shadow-elegant">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20 py-6">
           {/* Ligne contenant logo + dashboard */}
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -23,12 +23,17 @@ const Index = ({ onAddTransaction }: { onAddTransaction: (t: Transaction) => voi
                 className="h-10 sm:h-12 md:h-14 w-auto"
               />
             </div>
-
             {/* Dashboard bouton */}
             <div>
               <Button
                 variant="ghost"
-                onClick={() => navigate("/dashboard")}
+                onClick={() => {
+                  if (localStorage.getItem("isAdminLoggedIn") === "true") {
+                    navigate("/dashboard"); // ✅ déjà connecté → accès direct
+                  } else {
+                    navigate("/admin-login"); // ✅ sinon → passer par login
+                  }
+                }}
                 title="Aller au Dashboard"
                 className="p-2"
               >
