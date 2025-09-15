@@ -11,6 +11,7 @@ export const checkAdminLogin = (username: string, password: string) => {
 };
 
 // Vérifier si l'admin est déjà connecté
+
 export const isAdminLoggedIn = () => {
   return localStorage.getItem("isAdminLoggedIn") === "true";
 };
