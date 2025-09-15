@@ -107,12 +107,14 @@ export default function Dashboard({ transactions }: DashboardProps) {
 
   return (
     
-    <div className="p-4 sm:p-8 space-y-8">
+    <div className="p-4 sm:p-8 space-y-8 min-h-screen bg-background">
       <header className="bg-gradient-hero shadow-elegant">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Ligne contenant logo + dashboard */}
           <div className="flex items-center justify-between">
+
             {/* Logo */}
+            
             <div className="flex items-center">
               <img
                 src="/lovable-uploads/Dtech.png"
