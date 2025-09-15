@@ -23,7 +23,9 @@ const Index = ({ onAddTransaction }: { onAddTransaction: (t: Transaction) => voi
                 className="h-10 sm:h-12 md:h-14 w-auto"
               />
             </div>
+
             {/* Dashboard bouton */}
+            
             <div>
               <Button
                 variant="ghost"
