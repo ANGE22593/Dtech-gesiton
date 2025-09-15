@@ -23,7 +23,6 @@ import { Transaction } from "@/types/transaction";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { checkAdminLogin, isAdminLoggedIn, logoutAdmin } from "@/auth";
-
 // ---- Fonction utilitaire ----
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("fr-FR", { style: "currency", currency: "XOF" }).format(value);
@@ -196,7 +195,10 @@ export default function Dashboard({ transactions }: DashboardProps) {
               className="mb-3"
             />
             <div className="flex justify-between mt-4">
-              <Button onClick={handleAdminLogin}>Se connecter</Button>
+              {/* ...autres champs... */}
+              <Button onClick={handleAdminLogin} className="w-full">
+                Se connecter
+              </Button>
               <Button variant="outline" onClick={() => setShowLogin(false)}>
                 Annuler
               </Button>
