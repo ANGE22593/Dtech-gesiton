@@ -122,17 +122,12 @@ export default function Dashboard({ transactions }: DashboardProps) {
                 className="h-10 sm:h-12 md:h-14 w-auto"
               />
             </div>
-
-            {/* Dashboard bouton */}
-            <div>
-              
-            </div>
           </div>
 
           {/* Titre */}
           <div className="text-center mt-4">
             <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-              Caisse Journalière
+              Tableau des statistiques
             </h1>
             <p className="text-base sm:text-lg text-white/90">
               Saisissez et exportez vos données financières en toute simplicité
@@ -140,7 +135,6 @@ export default function Dashboard({ transactions }: DashboardProps) {
           </div>
         </div>
       </header>
-      <h1 className="text-2xl font-bold mb-6">Tableau des statistiques</h1>
       <div className="flex items-center justify-between mb-6">
         <Button
           onClick={() => navigate(-1)}
@@ -149,7 +143,6 @@ export default function Dashboard({ transactions }: DashboardProps) {
         >
           ← Retour
         </Button>
-        <h1 className="text-2xl font-bold">Tableau des statistiques</h1>
       </div>
 
         {/* ---- Gestion ---- */}
