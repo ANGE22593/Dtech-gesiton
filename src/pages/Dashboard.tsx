@@ -125,14 +125,7 @@ export default function Dashboard({ transactions }: DashboardProps) {
 
             {/* Dashboard bouton */}
             <div>
-              <Button
-                variant="ghost"
-                onClick={() => navigate("/dashboard")}
-                title="Aller au Dashboard"
-                className="p-2"
-              >
-                <LayoutDashboard className="h-6 w-6 sm:h-7 sm:w-7" />
-              </Button>
+              
             </div>
           </div>
 
