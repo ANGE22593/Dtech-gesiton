@@ -9,29 +9,30 @@ const AdminLogin = () => {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("password", password);
+  try {
+    const response = await fetch("http://localhost/dtech_caisse/login.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        username,
+        password,
+      }),
+    });
 
-    try {
-      const res = await fetch("http://localhost/dtech/login.php", {
-        method: "POST",
-        body: formData,
-      });
+    const data = await response.json();
 
-      const data = await res.json();
-
-      if (data.success) {
-        // ✅ Redirige vers le Dashboard
-        navigate("/dashboard");
-      } else {
-        alert(data.message);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Erreur serveur. Vérifiez que WAMP est démarré.");
+    if (data.success) {
+      localStorage.setItem("isAdminLoggedIn", "true");
+      navigate("/dashboard");
+    } else {
+      alert(data.message);
     }
-  };
+  } catch (error) {
+    alert("Erreur de connexion au serveur");
+    console.error(error);
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

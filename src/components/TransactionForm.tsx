@@ -206,7 +206,7 @@ export const TransactionForm = ({ onAddTransaction }: TransactionFormProps) => {
                   aria-expanded={openNom}
                   className="w-full justify-between transition-smooth focus:shadow-hover"
                 >
-                  
+
                   {formData.nom || "Sélectionner ou entrer un nom..."}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -403,7 +403,7 @@ export const TransactionForm = ({ onAddTransaction }: TransactionFormProps) => {
               className="w-full bg-gradient-primary hover:shadow-hover transition-all duration-300 transform hover:scale-[1.02]"
             >
               <Calculator className="h-4 w-4 mr-2" />
-              Ajouter la Transaction
+              Valider la Transaction
             </Button>
           </div>
         </form>
