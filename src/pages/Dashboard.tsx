@@ -84,7 +84,7 @@ export default function Dashboard({ transactions }: DashboardProps) {
   // ---- Logout ----
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost/dtech_db/logout.php");
+      await fetch("http://localhost/dtech/logout.php");
       navigate("/admin-login");
     } catch (err) {
       console.error(err);
